@@ -1,24 +1,52 @@
 import React, { useState } from "react";
+import { v4 as uuid } from "uuid";
 
-function Item({ name, category }) {
-  const [isInCart, setIsInCart] = useState(false);
+function ItemForm({ onItemFormSubmit }) {
+  const [name, setName] = useState("");
+  const [category, setCategory] = useState("Produce");
 
-  function handleAddToCartClick() {
-    setIsInCart((isInCart) => !isInCart);
+  function handleSubmit(e) {
+    e.preventDefault();
+
+    const newItem = {
+      id: uuid(),
+      name: name,
+      category: category,
+    };
+
+    onItemFormSubmit(newItem);
+    // optional: clear the input fields
+    setName("");
+    setCategory("Produce");
   }
 
   return (
-    <li className={isInCart ? "in-cart" : ""}>
-      <span>{name}</span>
-      <span className="category">{category}</span>
-      <button
-        className={isInCart ? "remove" : "add"}
-        onClick={handleAddToCartClick}
-      >
-        {isInCart ? "Remove From" : "Add to"} Cart
-      </button>
-    </li>
+    <form className="NewItem" onSubmit={handleSubmit}>
+      <label>
+        Name:
+        <input
+          type="text"
+          name="name"
+          autoComplete="off"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+      </label>
+      <label>
+        Category:
+        <select
+          name="category"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+        >
+          <option value="Produce">Produce</option>
+          <option value="Dairy">Dairy</option>
+          <option value="Dessert">Dessert</option>
+        </select>
+      </label>
+      <button type="submit">Add to List</button>
+    </form>
   );
 }
 
-export default Item;
+export default ItemForm;
